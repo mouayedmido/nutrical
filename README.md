@@ -1,19 +1,19 @@
 # 🥗 Nutrical - Calculateur de Nutrition 
 
-Nutrical is a modern web application designed to help users track their daily nutritional intake with precision, featuring a specialized focus on Tunisian cuisine.
+Nutrical est une application web moderne conçue pour aider les utilisateurs à suivre leurs apports nutritionnels quotidiens avec précision, avec un accent particulier sur la cuisine tunisienne.
 
-## ✨ Functionalities
+## ✨ Fonctionnalités
 
-* **Intuitive Search:** Quickly find foods from a diverse and growing database.
-* **Tunisian Cuisine Focus:** Built-in database including local dishes like Tajine, Couscous, and more.
-* **Real-Time Calculation:** Adjust quantities in grams and instantly see the impact on your macronutrients (Protein, Carbs, Fats).
-* **Smart Recommendations:** Provides daily nutritional targets based on standard health guidelines.
-* **Dynamic Notifications:** Visual alerts and toasts when adding items to your daily log.
-* **Clean UI:** A minimalist, high-performance interface designed for speed and ease of use.
+* **Recherche Intuitive :** Trouvez rapidement des aliments parmi une base de données variée et en pleine expansion.
+* **Spécialité Cuisine Tunisienne :** Base de données intégrée incluant des plats locaux comme le Tajine, le Couscous, et bien plus encore.
+* **Calcul en Temps Réel :** Ajustez les quantités en grammes et voyez instantanément l'impact sur vos macronutriments (Protéines, Glucides, Lipides).
+* **Recommandations Intelligentes :** Fournit des objectifs nutritionnels quotidiens basés sur les normes de santé standards.
+* **Notifications Dynamiques :** Alertes visuelles et messages "toast" lors de l'ajout d'aliments à votre journal quotidien.
+* **Interface Épurée :** Une interface minimaliste et performante conçue pour la rapidité et la facilité d'utilisation.
 
-## 🤝 Contributing
+## 🤝 Contribution
 
-Ce projet est **Open Source** ! N'hésitez pas à "forker" le dépôt, à signaler des bugs ou à soumettre des "pull requests" pour aider à améliorer la base de données ou l'interface.
+Ce projet est **Open Source** ! N'hésitez pas à "forker" le dépôt, à signaler des bugs ou à soumettre des "pull requests" pour aider à améliorer la base de données ou l'interface utilisateur.
 
 ---
-**Made by Hazem Iyed Mouayad Adam printHallo**
+**Réalisé par Hazem Iyed Mouayad Adam printHallo**
