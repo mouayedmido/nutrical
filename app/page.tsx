@@ -16,6 +16,7 @@ import { UserProfile, getRecommendations, DailyRecommendations } from '@/lib/rec
 import { FoodItem } from '@/lib/nutritionData';
 import { calculateFoodNutrition } from '@/lib/nutritionCalculator';
 import { ThemeToggle } from '@/components/ThemeToggle';
+import { MacronutrientChart } from '@/components/nutrition/MacronutrientChart';
 
 const PROFILE_STORAGE_KEY = 'nutrical.profile.v1';
 
@@ -63,6 +64,15 @@ export default function Home() {
     localStorage.setItem(getFoodStorageKey(todayKey), JSON.stringify(consumedFoods));
   }, [consumedFoods, hydrated, todayKey]);
 
+  const totals = consumedFoods.reduce(
+    (acc, food) => ({
+      protein: acc.protein + (food.protein || 0),
+      carbs: acc.carbs + (food.carbs || 0),
+      fat: acc.fat + (food.fat || 0),
+    }),
+    { protein: 0, carbs: 0, fat: 0 }
+  );
+
   const handleProfileChange = (newProfile: UserProfile) => {
     setProfile(newProfile);
     setRecommendations(getRecommendations(newProfile));
@@ -81,7 +91,6 @@ export default function Home() {
   const handleProfileWeightUpdate = (weight: number) => {
     setProfile(prev => {
       if (!prev) return prev;
-
       const updatedProfile = { ...prev, weight };
       setRecommendations(getRecommendations(updatedProfile));
       localStorage.setItem(PROFILE_STORAGE_KEY, JSON.stringify(updatedProfile));
@@ -92,7 +101,6 @@ export default function Home() {
   const handleRemoveFood = (_foodId: string, index: number) => {
     const removedFood = consumedFoods[index];
     setConsumedFoods(prev => prev.filter((_, i) => i !== index));
-
     if (removedFood) {
       toast({
         title: "Aliment retiré",
@@ -135,7 +143,6 @@ export default function Home() {
             
             <div className="flex flex-wrap items-center gap-2">
               <ThemeToggle />
-              
               {profile && (
                 <>
                   <Button variant="outline" onClick={resetProfile} className="border border-border w-fit">
@@ -204,16 +211,24 @@ export default function Home() {
               </TabsContent>
 
               <TabsContent value="summary" className="space-y-8 mt-8">
-                <NutritionDisplay
-                  foods={consumedFoods}
-                  dailyTargets={recommendations ? {
-                    calories: recommendations.calories,
-                    protein: recommendations.protein,
-                    carbs: recommendations.carbs,
-                    fat: recommendations.fat,
-                  } : undefined}
-                  onRemoveFood={handleRemoveFood}
-                />
+                <div className="space-y-8">
+                  <NutritionDisplay
+                    foods={consumedFoods}
+                    dailyTargets={recommendations ? {
+                      calories: recommendations.calories,
+                      protein: recommendations.protein,
+                      carbs: recommendations.carbs,
+                      fat: recommendations.fat,
+                    } : undefined}
+                    onRemoveFood={handleRemoveFood}
+                  />
+                  
+                  <div className="flex justify-center">
+                    <div className="w-full max-w-2xl">
+                      <MacronutrientChart data={totals} />
+                    </div>
+                  </div>
+                </div>
               </TabsContent>
 
               <TabsContent value="nutrients" className="space-y-8 mt-8">
