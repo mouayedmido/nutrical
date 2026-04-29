@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { FieldGroup, Field, FieldLabel } from '@/components/ui/field';
+import { useToast } from "@/hooks/use-toast";
 
 type FoodSearchProps = {
   onAddFood: (food: FoodItem, quantity: number) => void;
@@ -34,6 +35,7 @@ export function FoodSearch({ onAddFood }: FoodSearchProps) {
   const [selectedCategory, setSelectedCategory] = useState<string | null>('tunisian');
   const [selectedFood, setSelectedFood] = useState<FoodItem | null>(null);
   const [quantity, setQuantity] = useState(100);
+  const { toast } = useToast();
 
   const categories = Array.from(new Set(nutritionDatabase.map(f => f.category)));
 
@@ -45,9 +47,14 @@ export function FoodSearch({ onAddFood }: FoodSearchProps) {
     });
   }, [search, selectedCategory]);
 
-  const handleAddFood = () => {
+  const handleAddFood = (e: React.MouseEvent) => {
+    e.stopPropagation();
     if (selectedFood) {
       onAddFood(selectedFood, quantity);
+      toast({
+        title: "Aliment ajouté ! ✅",
+        description: `${quantity}g de ${selectedFood.name} a été ajouté à votre journée.`,
+      });
       setQuantity(100);
       setSelectedFood(null);
     }
@@ -55,7 +62,6 @@ export function FoodSearch({ onAddFood }: FoodSearchProps) {
 
   return (
     <div className="space-y-6">
-      {/* search filter Card */}
       <Card className="border border-border">
         <CardHeader className="border-b border-border">
           <CardTitle className="text-lg">Ajouter des Aliments</CardTitle>
@@ -75,7 +81,7 @@ export function FoodSearch({ onAddFood }: FoodSearchProps) {
                 variant={selectedCategory === null ? 'default' : 'outline'}
                 size="sm"
                 onClick={() => setSelectedCategory(null)}
-                className="border border-border"
+                className="border border-border cursor-pointer"
               >
                 Tous
               </Button>
@@ -85,7 +91,7 @@ export function FoodSearch({ onAddFood }: FoodSearchProps) {
                   variant={selectedCategory === cat ? 'default' : 'outline'}
                   size="sm"
                   onClick={() => setSelectedCategory(cat)}
-                  className="border border-border"
+                  className="border border-border cursor-pointer"
                 >
                   {categoryLabels[cat]}
                 </Button>
@@ -99,109 +105,103 @@ export function FoodSearch({ onAddFood }: FoodSearchProps) {
         </CardContent>
       </Card>
 
-      {/* food grid */}
       <div className="space-y-6">
         {filteredFoods.length > 0 ? (
-          <>
-            <div className="grid gap-6">
-              {filteredFoods.map((food) => (
-                <Card 
-                  key={food.id} 
-                  className={`border cursor-pointer transition-all hover:shadow-md ${
-                    selectedFood?.id === food.id 
-                      ? 'border-foreground ring-2 ring-foreground' 
-                      : 'border-border hover:border-foreground'
-                  }`}
-                  onClick={() => {
-                    setSelectedFood(food);
-                    setQuantity(100);
-                  }}
-                >
-                  <div className="grid grid-cols-1 md:grid-cols-[300px_1fr] gap-6 p-6">
-                    <div className="relative h-64 md:h-auto bg-muted rounded-lg overflow-hidden border border-border">
-                      <Image
-                        src={food.image}
-                        alt={food.name}
-                        fill
-                        className="object-cover"
-                        sizes="(max-width: 768px) 100vw, 300px"
-                      />
-                    </div>
+          <div className="grid gap-6">
+            {filteredFoods.map((food) => (
+              <Card 
+                key={food.id} 
+                className={`border cursor-pointer transition-all hover:shadow-md ${
+                  selectedFood?.id === food.id 
+                    ? 'border-foreground ring-2 ring-foreground' 
+                    : 'border-border hover:border-foreground'
+                }`}
+                onClick={() => {
+                  setSelectedFood(food);
+                  setQuantity(100);
+                }}
+              >
+                <div className="grid grid-cols-1 md:grid-cols-[300px_1fr] gap-6 p-6">
+                  <div className="relative h-64 md:h-auto bg-muted rounded-lg overflow-hidden border border-border">
+                    <Image
+                      src={food.image}
+                      alt={food.name}
+                      fill
+                      className="object-cover"
+                      sizes="(max-width: 768px) 100vw, 300px"
+                    />
+                  </div>
 
-                    {/* details seciton */}
-                    <div className="flex flex-col justify-between">
-                      <div className="space-y-4">
-                        <div>
-                          <h3 className="text-xl font-semibold mb-1">{food.name}</h3>
-                          <p className="text-sm text-muted-foreground">{categoryLabels[food.category]} • {food.servingSize}</p>
+                  <div className="flex flex-col justify-between">
+                    <div className="space-y-4">
+                      <div>
+                        <h3 className="text-xl font-semibold mb-1">{food.name}</h3>
+                        <p className="text-sm text-muted-foreground">{categoryLabels[food.category]} • {food.servingSize}</p>
+                      </div>
+
+                      <div className="grid grid-cols-4 gap-3">
+                        <div className="p-3 bg-muted/40 rounded border border-border">
+                          <p className="text-xs text-muted-foreground mb-1">Calories</p>
+                          <p className="text-lg font-bold">{Math.round(food.calories)}</p>
                         </div>
-
-                        {/* macros grid */}
-                        <div className="grid grid-cols-4 gap-3">
-                          <div className="p-3 bg-muted/40 rounded border border-border">
-                            <p className="text-xs text-muted-foreground mb-1">Calories</p>
-                            <p className="text-lg font-bold">{Math.round(food.calories)}</p>
-                          </div>
-                          <div className="p-3 bg-muted/40 rounded border border-border">
-                            <p className="text-xs text-muted-foreground mb-1">Protéines</p>
-                            <p className="text-lg font-bold">{food.protein}g</p>
-                          </div>
-                          <div className="p-3 bg-muted/40 rounded border border-border">
-                            <p className="text-xs text-muted-foreground mb-1">Glucides</p>
-                            <p className="text-lg font-bold">{food.carbs}g</p>
-                          </div>
-                          <div className="p-3 bg-muted/40 rounded border border-border">
-                            <p className="text-xs text-muted-foreground mb-1">Lipides</p>
-                            <p className="text-lg font-bold">{food.fat}g</p>
-                          </div>
+                        <div className="p-3 bg-muted/40 rounded border border-border">
+                          <p className="text-xs text-muted-foreground mb-1">Protéines</p>
+                          <p className="text-lg font-bold">{food.protein}g</p>
                         </div>
-
-                        {/* add info */}
-                        <div className="grid grid-cols-3 gap-3 text-sm">
-                          <div>
-                            <p className="text-xs text-muted-foreground">Fibres</p>
-                            <p className="font-semibold">{food.fiber}g</p>
-                          </div>
-                          <div>
-                            <p className="text-xs text-muted-foreground">Vitamines</p>
-                            <p className="font-semibold">{Object.values(food.vitamins).filter(v => v > 0).length}</p>
-                          </div>
-                          <div>
-                            <p className="text-xs text-muted-foreground">Minéraux</p>
-                            <p className="font-semibold">{Object.values(food.minerals).filter(v => v > 0).length}</p>
-                          </div>
+                        <div className="p-3 bg-muted/40 rounded border border-border">
+                          <p className="text-xs text-muted-foreground mb-1">Glucides</p>
+                          <p className="text-lg font-bold">{food.carbs}g</p>
+                        </div>
+                        <div className="p-3 bg-muted/40 rounded border border-border">
+                          <p className="text-xs text-muted-foreground mb-1">Lipides</p>
+                          <p className="text-lg font-bold">{food.fat}g</p>
                         </div>
                       </div>
 
-                      {selectedFood?.id === food.id && (
-                        <div className="mt-6 space-y-4 pt-6 border-t border-border">
-                          <FieldGroup>
-                            <Field>
-                              <FieldLabel>Quantité (g)</FieldLabel>
-                              <Input
-                                type="number"
-                                value={quantity}
-                                onChange={(e) => setQuantity(parseInt(e.target.value) || 100)}
-                                min="1"
-                                max="1000"
-                                className="border border-border h-10 text-base"
-                              />
-                            </Field>
-                          </FieldGroup>
-                          <Button
-                            onClick={handleAddFood}
-                            className="w-full h-11 text-base font-semibold bg-foreground text-background hover:bg-foreground/90"
-                          >
-                            Ajouter à la Journée
-                          </Button>
+                      <div className="grid grid-cols-3 gap-3 text-sm">
+                        <div>
+                          <p className="text-xs text-muted-foreground">Fibres</p>
+                          <p className="font-semibold">{food.fiber}g</p>
                         </div>
-                      )}
+                        <div>
+                          <p className="text-xs text-muted-foreground">Vitamines</p>
+                          <p className="font-semibold">{Object.values(food.vitamins).filter(v => v > 0).length}</p>
+                        </div>
+                        <div>
+                          <p className="text-xs text-muted-foreground">Minéraux</p>
+                          <p className="font-semibold">{Object.values(food.minerals).filter(v => v > 0).length}</p>
+                        </div>
+                      </div>
                     </div>
+
+                    {selectedFood?.id === food.id && (
+                      <div className="mt-6 space-y-4 pt-6 border-t border-border">
+                        <FieldGroup>
+                          <Field>
+                            <FieldLabel>Quantité (g)</FieldLabel>
+                            <Input
+                              type="number"
+                              value={quantity}
+                              onChange={(e) => setQuantity(parseInt(e.target.value) || 100)}
+                              min="1"
+                              max="1000"
+                              className="border border-border h-10 text-base"
+                            />
+                          </Field>
+                        </FieldGroup>
+                        <Button
+                          onClick={handleAddFood}
+                          className="w-full h-11 text-base font-semibold bg-foreground text-background hover:bg-foreground/90 cursor-pointer"
+                        >
+                          Ajouter à la Journée
+                        </Button>
+                      </div>
+                    )}
                   </div>
-                </Card>
-              ))}
-            </div>
-          </>
+                </div>
+              </Card>
+            ))}
+          </div>
         ) : (
           <div className="text-center py-16">
             <p className="text-muted-foreground text-lg">Aucun aliment trouvé.</p>
