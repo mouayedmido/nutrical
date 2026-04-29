@@ -190,9 +190,6 @@ export function FoodSearch({ onAddFood }: FoodSearchProps) {
                           <p className="text-sm text-muted-foreground">
                             {categoryLabels[food.category] || food.category} • portion de référence : {food.servingSize}
                           </p>
-                          {food.aliases?.length ? (
-                            <p className="text-xs text-muted-foreground mt-1">Aussi recherché : {food.aliases.slice(0, 3).join(', ')}</p>
-                          ) : null}
                         </div>
 
                         <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
