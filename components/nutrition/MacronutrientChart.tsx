@@ -57,15 +57,15 @@ export function MacronutrientChart({ data }: Props) {
           </div>
         )}
       </CardHeader>
-      <CardContent className="h-[350px]">
+      <CardContent className="h-[450px]">
         <ResponsiveContainer width="100%" height="100%">
           <PieChart>
             <Pie
               data={chartData}
               cx="50%"
               cy="50%"
-              innerRadius={60}
-              outerRadius={80}
+              innerRadius={70}
+              outerRadius={110}
               paddingAngle={5}
               dataKey="value"
             >
@@ -83,7 +83,7 @@ export function MacronutrientChart({ data }: Props) {
               align="center"
               layout="vertical"
               iconType="circle"
-              wrapperStyle={{ fontSize: '12px', paddingTop: '20px' }}
+              wrapperStyle={{ fontSize: '14px', paddingTop: '30px' }}
             />
           </PieChart>
         </ResponsiveContainer>

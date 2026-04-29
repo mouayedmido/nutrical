@@ -3,6 +3,12 @@
 
 @variant dark (&:is(.dark *));
 
+button, 
+[role="button"],
+.inline-flex.items-center.justify-center.rounded-md {
+  cursor: pointer !important;
+}
+
 :root {
   --background: oklch(1 0 0);
   --foreground: oklch(0.145 0 0);
