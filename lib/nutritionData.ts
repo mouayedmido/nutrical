@@ -13,6 +13,7 @@ export type FoodItem = {
   minerals: Record<string, number>;
 };
 
+
 const baseVitamins = {
   'vitamin_a': 0,
   'vitamin_b1': 0,
@@ -40,6 +41,11 @@ const baseMinerals = {
   'manganese': 0,
   'selenium': 0,
   'iodine': 0,
+};
+
+export const parseServingSize = (servingSize: string): number => {
+  const numericValue = parseInt(servingSize.replace(/\D/g, ''));
+  return isNaN(numericValue) || numericValue === 0 ? 100 : numericValue;
 };
 
 export const nutritionDatabase: FoodItem[] = [

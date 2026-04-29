@@ -1,5 +1,6 @@
 'use client';
 
+import { parseServingSize } from '@/lib/nutritionData';
 import { useState, useMemo } from 'react';
 import Image from 'next/image';
 import { FoodItem, nutritionDatabase } from '@/lib/nutritionData';
@@ -50,7 +51,20 @@ export function FoodSearch({ onAddFood }: FoodSearchProps) {
   const handleAddFood = (e: React.MouseEvent) => {
     e.stopPropagation();
     if (selectedFood) {
-      onAddFood(selectedFood, quantity);
+      const baseWeight = parseServingSize(selectedFood.servingSize);
+      const ratio = quantity / baseWeight;
+
+      const calculatedFood: FoodItem = {
+        ...selectedFood,
+        calories: Math.round(selectedFood.calories * ratio),
+        protein: Number((selectedFood.protein * ratio).toFixed(1)),
+        carbs: Number((selectedFood.carbs * ratio).toFixed(1)),
+        fat: Number((selectedFood.fat * ratio).toFixed(1)),
+        fiber: Number((selectedFood.fiber * ratio).toFixed(1)),
+      };
+
+      onAddFood(calculatedFood, quantity);
+      
       toast({
         title: "Aliment ajouté ! ✅",
         description: `${quantity}g de ${selectedFood.name} a été ajouté à votre journée.`,
@@ -118,7 +132,7 @@ export function FoodSearch({ onAddFood }: FoodSearchProps) {
                 }`}
                 onClick={() => {
                   setSelectedFood(food);
-                  setQuantity(100);
+                  setQuantity(parseServingSize(food.servingSize));
                 }}
               >
                 <div className="grid grid-cols-1 md:grid-cols-[300px_1fr] gap-6 p-6">
@@ -178,7 +192,7 @@ export function FoodSearch({ onAddFood }: FoodSearchProps) {
                       <div className="mt-6 space-y-4 pt-6 border-t border-border">
                         <FieldGroup>
                           <Field>
-                            <FieldLabel>Quantité (g)</FieldLabel>
+                            <FieldLabel>Quantité ({selectedFood.servingSize.toLowerCase().includes('ml') ? 'ml' : 'g'})</FieldLabel>
                             <Input
                               type="number"
                               value={quantity}

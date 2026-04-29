@@ -16,7 +16,7 @@ export function DailyRecommendationsDisplay({ recommendations }: DailyRecommenda
         </CardHeader>
         <CardContent className="pt-6">
           <p className="text-sm text-muted-foreground">
-            Entrez votre âge et poids pour obtenir vos jj objectifs nutritionnels personnalisés.
+            Entrez votre âge et poids pour obtenir vos objectifs nutritionnels personnalisés.
           </p>
         </CardContent>
       </Card>
