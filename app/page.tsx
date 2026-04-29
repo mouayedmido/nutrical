@@ -15,6 +15,7 @@ import { useToast } from '@/hooks/use-toast';
 import { UserProfile, getRecommendations, DailyRecommendations } from '@/lib/recommendations';
 import { FoodItem } from '@/lib/nutritionData';
 import { calculateFoodNutrition } from '@/lib/nutritionCalculator';
+import { ThemeToggle } from '@/components/ThemeToggle';
 
 const PROFILE_STORAGE_KEY = 'nutrical.profile.v1';
 
@@ -121,7 +122,7 @@ export default function Home() {
   };
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background text-foreground transition-colors duration-300">
       <header className="border-b border-border sticky top-0 bg-background/95 backdrop-blur z-40">
         <div className="max-w-7xl mx-auto px-4 py-6 sm:px-6 lg:px-8">
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
@@ -131,18 +132,23 @@ export default function Home() {
                 Suivez vos calories, macronutriments, vitamines et minéraux avec des aliments locaux.
               </p>
             </div>
-            {profile && (
-              <div className="flex flex-wrap gap-2">
-                <Button variant="outline" onClick={resetProfile} className="border border-border w-fit">
-                  Changer le profil
-                </Button>
-                {consumedFoods.length > 0 && (
-                  <Button variant="outline" onClick={handleClearAll} className="border border-border w-fit">
-                    Vider la journée
+            
+            <div className="flex flex-wrap items-center gap-2">
+              <ThemeToggle />
+              
+              {profile && (
+                <>
+                  <Button variant="outline" onClick={resetProfile} className="border border-border w-fit">
+                    Changer le profil
                   </Button>
-                )}
-              </div>
-            )}
+                  {consumedFoods.length > 0 && (
+                    <Button variant="outline" onClick={handleClearAll} className="border border-border w-fit">
+                      Vider la journée
+                    </Button>
+                  )}
+                </>
+              )}
+            </div>
           </div>
         </div>
       </header>
@@ -154,7 +160,7 @@ export default function Home() {
           </div>
         ) : (
           <div className="space-y-8">
-            <Card className="border border-border">
+            <Card className="border border-border bg-card text-card-foreground">
               <CardHeader className="border-b border-border">
                 <CardTitle className="text-base">Profil actif</CardTitle>
               </CardHeader>
