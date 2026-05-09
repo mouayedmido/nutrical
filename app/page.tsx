@@ -214,6 +214,7 @@ export default function Home() {
                 <div className="space-y-8">
                   <NutritionDisplay
                     foods={consumedFoods}
+                    userWeight={profile.weight}
                     dailyTargets={recommendations ? {
                       calories: recommendations.calories,
                       protein: recommendations.protein,
