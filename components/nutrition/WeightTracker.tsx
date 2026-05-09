@@ -1,5 +1,6 @@
 'use client';
 
+import { WeightChart } from "./WeightChart"
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -174,6 +175,8 @@ export function WeightTracker({ profileWeight, onProfileWeightUpdate }: WeightTr
           </Button>
         </CardContent>
       </Card>
+
+      <WeightChart data={entries} />
 
       <Card className="border border-border">
         <CardHeader className="border-b border-border">
