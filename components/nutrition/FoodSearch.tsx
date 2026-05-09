@@ -48,7 +48,7 @@ function parseQuantityInput(value: string): number | null {
 export function FoodSearch({ onAddFood }: FoodSearchProps) {
   const { toast } = useToast();
   const [search, setSearch] = useState('');
-  const [selectedCategory, setSelectedCategory] = useState<string | null>('tunisian');
+  const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [selectedFood, setSelectedFood] = useState<FoodItem | null>(null);
   const [quantity, setQuantity] = useState('100');
 

@@ -4,9 +4,11 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { FoodItem } from '@/lib/nutritionData';
 import { calculateTotalNutrition, calculateMacroPercentages, parseServingSize } from '@/lib/nutritionCalculator';
+import { Droplets } from 'lucide-react';
 
 type NutritionDisplayProps = {
   foods: FoodItem[];
+  userWeight?: number;
   dailyTargets?: {
     calories: number;
     protein: number;
@@ -29,15 +31,20 @@ function ProgressBar({ value, target, label }: { value: number; target?: number;
 
 function formatLoggedQuantity(food: FoodItem): string {
   if (!food.quantityGrams) return food.servingSize;
-
   const unit = food.quantityUnit || parseServingSize(food.referenceServingSize || food.servingSize).unit;
   return `${food.quantityGrams}${unit}`;
 }
 
-export function NutritionDisplay({ foods, dailyTargets, onRemoveFood }: NutritionDisplayProps) {
+export function NutritionDisplay({ foods, dailyTargets, onRemoveFood, userWeight = 50 }: NutritionDisplayProps) {
   const totals = calculateTotalNutrition(foods);
   const macroPercentages = calculateMacroPercentages(totals.protein, totals.carbs, totals.fat);
   const caloriesPercentage = dailyTargets?.calories ? Math.round((totals.calories / dailyTargets.calories) * 100) : 0;
+
+  const waterGoalMl = userWeight * 35;
+  const currentWaterMl = foods
+    .filter(f => f.name.toLowerCase() === 'eau')
+    .reduce((acc, f) => acc + (f.quantityGrams || 0), 0);
+  const waterPercentage = Math.min(100, (currentWaterMl / waterGoalMl) * 100);
 
   return (
     <div className="space-y-6">
@@ -62,7 +69,6 @@ export function NutritionDisplay({ foods, dailyTargets, onRemoveFood }: Nutritio
                   <div className="text-xs text-muted-foreground mb-2">Protéines</div>
                   <p className="text-xl font-bold">{totals.protein}g</p>
                   <p className="text-xs text-muted-foreground">{macroPercentages.protein}% des calories</p>
-                  {dailyTargets && <p className="text-xs text-muted-foreground">/ {dailyTargets.protein}g</p>}
                   <ProgressBar value={totals.protein} target={dailyTargets?.protein} label="Protéines" />
                 </div>
 
@@ -70,7 +76,6 @@ export function NutritionDisplay({ foods, dailyTargets, onRemoveFood }: Nutritio
                   <div className="text-xs text-muted-foreground mb-2">Glucides</div>
                   <p className="text-xl font-bold">{totals.carbs}g</p>
                   <p className="text-xs text-muted-foreground">{macroPercentages.carbs}% des calories</p>
-                  {dailyTargets && <p className="text-xs text-muted-foreground">/ {dailyTargets.carbs}g</p>}
                   <ProgressBar value={totals.carbs} target={dailyTargets?.carbs} label="Glucides" />
                 </div>
 
@@ -78,14 +83,32 @@ export function NutritionDisplay({ foods, dailyTargets, onRemoveFood }: Nutritio
                   <div className="text-xs text-muted-foreground mb-2">Lipides</div>
                   <p className="text-xl font-bold">{totals.fat}g</p>
                   <p className="text-xs text-muted-foreground">{macroPercentages.fat}% des calories</p>
-                  {dailyTargets && <p className="text-xs text-muted-foreground">/ {dailyTargets.fat}g</p>}
                   <ProgressBar value={totals.fat} target={dailyTargets?.fat} label="Lipides" />
                 </div>
               </div>
 
-              <div className="p-4 bg-muted/40 rounded border border-border w-full sm:w-fit">
-                <span className="text-xs text-muted-foreground">Fibres</span>
-                <p className="text-sm font-semibold">{totals.fiber}g</p>
+              <div className="flex flex-wrap gap-4">
+                <div className="p-4 bg-muted/40 rounded border border-border min-w-[120px]">
+                  <span className="text-xs text-muted-foreground">Fibres</span>
+                  <p className="text-xl font-bold">{totals.fiber}g</p>
+                </div>
+
+                <div className="p-4 bg-muted/40 rounded border border-border flex items-center gap-4 min-w-[200px]">
+                  <div className="relative w-8 h-12 border-2 border-muted rounded-b-md overflow-hidden bg-muted/20">
+                    <div 
+                      className="absolute bottom-0 left-0 w-full bg-blue-500 transition-all duration-700 ease-in-out"
+                      style={{ height: `${waterPercentage}%` }}
+                    />
+                  </div>
+                  <div>
+                    <div className="flex items-center gap-1 text-muted-foreground">
+                      <Droplets className="size-3 text-blue-500" />
+                      <span className="text-xs font-medium">Eau</span>
+                    </div>
+                    <p className="text-xl font-bold">{(currentWaterMl / 1000).toFixed(1)}L</p>
+                    <p className="text-[10px] text-muted-foreground">/ {(waterGoalMl / 1000).toFixed(1)}L ({waterPercentage.toFixed(0)}%)</p>
+                  </div>
+                </div>
               </div>
             </div>
           )}
@@ -106,9 +129,6 @@ export function NutritionDisplay({ foods, dailyTargets, onRemoveFood }: Nutritio
                     <p className="text-xs text-muted-foreground">
                       {formatLoggedQuantity(food)} • {food.calories} cal • P: {food.protein}g • G: {food.carbs}g • L: {food.fat}g
                     </p>
-                    {food.referenceServingSize && (
-                      <p className="text-[11px] text-muted-foreground mt-1">Calculé depuis la portion de référence : {food.referenceServingSize}</p>
-                    )}
                   </div>
                   <Button
                     variant="ghost"
