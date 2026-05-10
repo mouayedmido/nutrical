@@ -24,17 +24,17 @@ export function MacronutrientChart({ data }: Props) {
   const pLip = (data.fat * 9 / totalCalories) * 100
 
   const isGplValid = 
-    pGluc >= 50 && pGluc <= 60 &&
-    pProt >= 20 && pProt <= 30 &&
+    pGluc >= 50 && pGluc <= 65 &&
+    pProt >= 20 && pProt <= 35 &&
     pLip >= 10 && pLip <= 20
 
   const chartData = [
     { 
-      name: `Glucides: ${pGluc.toFixed(1)}% (Rec: 50-60%)`, 
+      name: `Glucides: ${pGluc.toFixed(1)}% (Rec: 50-65%)`, 
       value: data.carbs * 4 
     },
     { 
-      name: `Protéines: ${pProt.toFixed(1)}% (Rec: 20-30%)`, 
+      name: `Protéines: ${pProt.toFixed(1)}% (Rec: 20-35%)`, 
       value: data.protein * 4 
     },
     { 
